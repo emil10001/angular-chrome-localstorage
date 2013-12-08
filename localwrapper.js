@@ -5,10 +5,23 @@
 
 angular.module('angular-chrome-localstorage', [ 'ngResource' ])
     .service('LocalWrapper', function ($rootScope) {
+        var chromeStore = null;
+        (function(){
+            if (!!chrome && !!chrome.storage) {
+                chromeStore = chrome.storage.local;
+            }
+        })();
+
+        this.setSync = function(sync){
+            if (sync)
+                chromeStore = chrome.storage.sync;
+            else
+                chromeStore = chrome.storage.local;
+        }
 
         this.get = function (key, EMIT_STR) {
-            if (!!chrome && !!chrome.storage) {
-                chrome.storage.sync.get(key, function(data){
+            if (!!chromeStore) {
+                chromeStore.get(key, function(data){
                     console.log(EMIT_STR,data);
                     $rootScope.$emit(EMIT_STR, data);
                 });
@@ -22,13 +35,15 @@ angular.module('angular-chrome-localstorage', [ 'ngResource' ])
             newSomething[key] = val;
             console.log(EMIT_STR, newSomething);
 
-            if (!!chrome && !!chrome.storage) {
-                chrome.storage.sync.set(newSomething, function(){
-                    $rootScope.$emit(EMIT_STR);
+            if (!!chromeStore) {
+                chromeStore.set(newSomething, function(){
+                    if (!!EMIT_STR)
+                        $rootScope.$emit(EMIT_STR);
                 });
             } else {
                 localStorage[key] = val;
-                $rootScope.$emit(EMIT_STR);
+                if (!!EMIT_STR)
+                    $rootScope.$emit(EMIT_STR);
             }
         };
 
@@ -37,13 +52,15 @@ angular.module('angular-chrome-localstorage', [ 'ngResource' ])
             newSomething[key] = "";
             console.log(EMIT_STR, newSomething);
 
-            if (!!chrome && !!chrome.storage) {
-                chrome.storage.sync.set(newSomething, function(){
-                    $rootScope.$emit(EMIT_STR);
+            if (!!chromeStore) {
+                chromeStore.set(newSomething, function(){
+                    if (!!EMIT_STR)
+                        $rootScope.$emit(EMIT_STR);
                 });
             } else {
                 localStorage[key] = val;
-                $rootScope.$emit(EMIT_STR);
+                if (!!EMIT_STR)
+                    $rootScope.$emit(EMIT_STR);
             }
         }
 
