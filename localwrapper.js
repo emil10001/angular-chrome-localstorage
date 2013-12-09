@@ -22,7 +22,6 @@ angular.module('angular-chrome-localstorage', [ 'ngResource' ])
         this.get = function (key, EMIT_STR) {
             if (!!chromeStore) {
                 chromeStore.get(key, function(data){
-                    console.log(EMIT_STR,data);
                     $rootScope.$emit(EMIT_STR, data);
                 });
             } else {
@@ -33,7 +32,6 @@ angular.module('angular-chrome-localstorage', [ 'ngResource' ])
         this.set = function (key, val, EMIT_STR) {
             var newSomething = {};
             newSomething[key] = val;
-            console.log(EMIT_STR, newSomething);
 
             if (!!chromeStore) {
                 chromeStore.set(newSomething, function(){
@@ -50,7 +48,6 @@ angular.module('angular-chrome-localstorage', [ 'ngResource' ])
         this.remove = function (key, EMIT_STR) {
             var newSomething = {};
             newSomething[key] = "";
-            console.log(EMIT_STR, newSomething);
 
             if (!!chromeStore) {
                 chromeStore.set(newSomething, function(){
