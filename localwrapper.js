@@ -20,9 +20,12 @@ angular.module('angular-chrome-localstorage', [ 'ngResource' ])
         }
 
         this.get = function (key, EMIT_STR) {
+            if (!EMIT_STR || EMIT_STR === '')
+                return;
+
             if (!!chromeStore) {
                 chromeStore.get(key, function(data){
-                    $rootScope.$emit(EMIT_STR, data);
+                    $rootScope.$emit(EMIT_STR, data[key]);
                 });
             } else {
                 $rootScope.$emit(EMIT_STR, localStorage[key]);
